@@ -1,0 +1,562 @@
+mysql> SHOW CREATE TABLE academic_years \G
+*************************** 1. row ***************************
+       Table: academic_years
+Create Table: CREATE TABLE `academic_years` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `school_id` bigint unsigned NOT NULL,
+  `start_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `academic_years_school_id_foreign` (`school_id`),
+  CONSTRAINT `academic_years_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chk_academic_years_status` CHECK ((`status` in (_utf8mb4'active',_utf8mb4'archived',_utf8mb4'upcoming')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE announcements \G
+*************************** 1. row ***************************
+       Table: announcements
+Create Table: CREATE TABLE `announcements` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `school_id` bigint unsigned NOT NULL,
+  `staff_id` bigint unsigned NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `posted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `announcements_school_id_foreign` (`school_id`),
+  KEY `announcements_staff_id_foreign` (`staff_id`),
+  CONSTRAINT `announcements_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `announcements_staff_id_foreign` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE attendance_records \G
+*************************** 1. row ***************************
+       Table: attendance_records
+Create Table: CREATE TABLE `attendance_records` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `student_id` bigint unsigned NOT NULL,
+  `class_id` bigint unsigned NOT NULL,
+  `date` date NOT NULL,
+  `status` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `attendance_records_student_id_foreign` (`student_id`),
+  KEY `attendance_records_class_id_foreign` (`class_id`),
+  CONSTRAINT `attendance_records_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `attendance_records_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chk_attendance_status` CHECK ((`status` in (_utf8mb4'present',_utf8mb4'absent',_utf8mb4'late')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.01 sec)
+
+mysql> SHOW CREATE TABLE cache \G
+*************************** 1. row ***************************
+       Table: cache
+Create Table: CREATE TABLE `cache` (
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` int NOT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE cache_locks \G
+*************************** 1. row ***************************
+       Table: cache_locks
+Create Table: CREATE TABLE `cache_locks` (
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` int NOT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE class_subjects \G
+*************************** 1. row ***************************
+       Table: class_subjects
+Create Table: CREATE TABLE `class_subjects` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `class_id` bigint unsigned NOT NULL,
+  `subject_id` bigint unsigned NOT NULL,
+  `teacher_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `class_subjects_class_id_foreign` (`class_id`),
+  KEY `class_subjects_subject_id_foreign` (`subject_id`),
+  KEY `class_subjects_teacher_id_foreign` (`teacher_id`),
+  CONSTRAINT `class_subjects_class_id_foreign` FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `class_subjects_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `class_subjects_teacher_id_foreign` FOREIGN KEY (`teacher_id`) REFERENCES `staff` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE classes \G
+*************************** 1. row ***************************
+       Table: classes
+Create Table: CREATE TABLE `classes` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `school_id` bigint unsigned NOT NULL,
+  `grade_id` bigint unsigned NOT NULL,
+  `academic_year_id` bigint unsigned NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `class_teacher_id` bigint unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `classes_school_id_foreign` (`school_id`),
+  KEY `classes_grade_id_foreign` (`grade_id`),
+  KEY `classes_academic_year_id_foreign` (`academic_year_id`),
+  KEY `classes_class_teacher_id_foreign` (`class_teacher_id`),
+  CONSTRAINT `classes_academic_year_id_foreign` FOREIGN KEY (`academic_year_id`) REFERENCES `academic_years` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `classes_class_teacher_id_foreign` FOREIGN KEY (`class_teacher_id`) REFERENCES `staff` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `classes_grade_id_foreign` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `classes_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.01 sec)
+
+mysql> SHOW CREATE TABLE disciplinary_records \G
+*************************** 1. row ***************************
+       Table: disciplinary_records
+Create Table: CREATE TABLE `disciplinary_records` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `student_id` bigint unsigned NOT NULL,
+  `staff_id` bigint unsigned NOT NULL,
+  `incident_date` date NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `action_taken` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `disciplinary_records_student_id_foreign` (`student_id`),
+  KEY `disciplinary_records_staff_id_foreign` (`staff_id`),
+  CONSTRAINT `disciplinary_records_staff_id_foreign` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `disciplinary_records_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE exam_results \G
+*************************** 1. row ***************************
+       Table: exam_results
+Create Table: CREATE TABLE `exam_results` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `exam_id` bigint unsigned NOT NULL,
+  `student_id` bigint unsigned NOT NULL,
+  `marks_obtained` decimal(5,2) NOT NULL,
+  `grade` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `exam_results_exam_id_foreign` (`exam_id`),
+  KEY `exam_results_student_id_foreign` (`student_id`),
+  CONSTRAINT `exam_results_exam_id_foreign` FOREIGN KEY (`exam_id`) REFERENCES `exams` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `exam_results_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE exams \G
+*************************** 1. row ***************************
+       Table: exams
+Create Table: CREATE TABLE `exams` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `academic_year_id` bigint unsigned NOT NULL,
+  `grade_id` bigint unsigned NOT NULL,
+  `subject_id` bigint unsigned NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `exams_academic_year_id_foreign` (`academic_year_id`),
+  KEY `exams_grade_id_foreign` (`grade_id`),
+  KEY `exams_subject_id_foreign` (`subject_id`),
+  CONSTRAINT `exams_academic_year_id_foreign` FOREIGN KEY (`academic_year_id`) REFERENCES `academic_years` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `exams_grade_id_foreign` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `exams_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE failed_jobs \G
+*************************** 1. row ***************************
+       Table: failed_jobs
+Create Table: CREATE TABLE `failed_jobs` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE fee_structures \G
+*************************** 1. row ***************************
+       Table: fee_structures
+Create Table: CREATE TABLE `fee_structures` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `academic_year_id` bigint unsigned NOT NULL,
+  `grade_id` bigint unsigned NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fee_structures_academic_year_id_foreign` (`academic_year_id`),
+  KEY `fee_structures_grade_id_foreign` (`grade_id`),
+  CONSTRAINT `fee_structures_academic_year_id_foreign` FOREIGN KEY (`academic_year_id`) REFERENCES `academic_years` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fee_structures_grade_id_foreign` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE grades \G
+*************************** 1. row ***************************
+       Table: grades
+Create Table: CREATE TABLE `grades` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `school_id` bigint unsigned NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `level_order` int NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `grades_school_id_foreign` (`school_id`),
+  CONSTRAINT `grades_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE guardian_relationships \G
+*************************** 1. row ***************************
+       Table: guardian_relationships
+Create Table: CREATE TABLE `guardian_relationships` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `student_id` bigint unsigned NOT NULL,
+  `guardian_id` bigint unsigned NOT NULL,
+  `relationship_type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `guardian_relationships_student_id_foreign` (`student_id`),
+  KEY `guardian_relationships_guardian_id_foreign` (`guardian_id`),
+  CONSTRAINT `guardian_relationships_guardian_id_foreign` FOREIGN KEY (`guardian_id`) REFERENCES `guardians` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `guardian_relationships_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chk_relationship_type` CHECK ((`relationship_type` in (_utf8mb4'father',_utf8mb4'mother',_utf8mb4'sibling',_utf8mb4'other')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE guardians \G
+*************************** 1. row ***************************
+       Table: guardians
+Create Table: CREATE TABLE `guardians` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `address` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE invoices \G
+*************************** 1. row ***************************
+       Table: invoices
+Create Table: CREATE TABLE `invoices` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `student_id` bigint unsigned NOT NULL,
+  `fee_structure_id` bigint unsigned NOT NULL,
+  `issue_date` date NOT NULL,
+  `due_date` date NOT NULL,
+  `status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `invoices_student_id_foreign` (`student_id`),
+  KEY `invoices_fee_structure_id_foreign` (`fee_structure_id`),
+  CONSTRAINT `invoices_fee_structure_id_foreign` FOREIGN KEY (`fee_structure_id`) REFERENCES `fee_structures` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `invoices_student_id_foreign` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chk_invoices_status` CHECK ((`status` in (_utf8mb4'unpaid',_utf8mb4'paid',_utf8mb4'overdue')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE job_batches \G
+*************************** 1. row ***************************
+       Table: job_batches
+Create Table: CREATE TABLE `job_batches` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_jobs` int NOT NULL,
+  `pending_jobs` int NOT NULL,
+  `failed_jobs` int NOT NULL,
+  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8mb4_unicode_ci,
+  `cancelled_at` int DEFAULT NULL,
+  `created_at` int NOT NULL,
+  `finished_at` int DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE jobs \G
+*************************** 1. row ***************************
+       Table: jobs
+Create Table: CREATE TABLE `jobs` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` tinyint unsigned NOT NULL,
+  `reserved_at` int unsigned DEFAULT NULL,
+  `available_at` int unsigned NOT NULL,
+  `created_at` int unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `jobs_queue_index` (`queue`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE media \G
+*************************** 1. row ***************************
+       Table: media
+Create Table: CREATE TABLE `media` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint unsigned NOT NULL,
+  `uuid` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `collection_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `file_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mime_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `disk` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `conversions_disk` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `size` bigint unsigned NOT NULL,
+  `manipulations` json NOT NULL,
+  `custom_properties` json NOT NULL,
+  `generated_conversions` json NOT NULL,
+  `responsive_images` json NOT NULL,
+  `order_column` int unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `media_uuid_unique` (`uuid`),
+  KEY `media_model_type_model_id_index` (`model_type`,`model_id`),
+  KEY `media_order_column_index` (`order_column`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE migrations \G
+*************************** 1. row ***************************
+       Table: migrations
+Create Table: CREATE TABLE `migrations` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE payments \G
+*************************** 1. row ***************************
+       Table: payments
+Create Table: CREATE TABLE `payments` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `invoice_id` bigint unsigned NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `payment_date` date NOT NULL,
+  `payment_method` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `payments_invoice_id_foreign` (`invoice_id`),
+  CONSTRAINT `payments_invoice_id_foreign` FOREIGN KEY (`invoice_id`) REFERENCES `invoices` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chk_payments_method` CHECK ((`payment_method` in (_utf8mb4'cash',_utf8mb4'card',_utf8mb4'bank_transfer')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE permissions \G
+*************************** 1. row ***************************
+       Table: permissions
+Create Table: CREATE TABLE `permissions` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE role_permissions \G
+*************************** 1. row ***************************
+       Table: role_permissions
+Create Table: CREATE TABLE `role_permissions` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `role_id` bigint unsigned NOT NULL,
+  `permission_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `role_permissions_role_id_foreign` (`role_id`),
+  KEY `role_permissions_permission_id_foreign` (`permission_id`),
+  CONSTRAINT `role_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `role_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.01 sec)
+
+mysql> SHOW CREATE TABLE roles \G
+*************************** 1. row ***************************
+       Table: roles
+Create Table: CREATE TABLE `roles` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE schools \G
+*************************** 1. row ***************************
+       Table: schools
+Create Table: CREATE TABLE `schools` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` text COLLATE utf8mb4_unicode_ci,
+  `phone` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE staff \G
+*************************** 1. row ***************************
+       Table: staff
+Create Table: CREATE TABLE `staff` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `school_id` bigint unsigned NOT NULL,
+  `first_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hire_date` date DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `staff_email_unique` (`email`),
+  KEY `staff_school_id_foreign` (`school_id`),
+  CONSTRAINT `staff_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE staff_assignments \G
+*************************** 1. row ***************************
+       Table: staff_assignments
+Create Table: CREATE TABLE `staff_assignments` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `staff_id` bigint unsigned NOT NULL,
+  `role_id` bigint unsigned NOT NULL,
+  `grade_id` bigint unsigned DEFAULT NULL,
+  `subject_id` bigint unsigned DEFAULT NULL,
+  `academic_year_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `staff_assignments_staff_id_foreign` (`staff_id`),
+  KEY `staff_assignments_role_id_foreign` (`role_id`),
+  KEY `staff_assignments_grade_id_foreign` (`grade_id`),
+  KEY `staff_assignments_subject_id_foreign` (`subject_id`),
+  KEY `staff_assignments_academic_year_id_foreign` (`academic_year_id`),
+  CONSTRAINT `staff_assignments_academic_year_id_foreign` FOREIGN KEY (`academic_year_id`) REFERENCES `academic_years` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `staff_assignments_grade_id_foreign` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `staff_assignments_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `staff_roles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `staff_assignments_staff_id_foreign` FOREIGN KEY (`staff_id`) REFERENCES `staff` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `staff_assignments_subject_id_foreign` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.01 sec)
+
+mysql> SHOW CREATE TABLE staff_roles \G
+*************************** 1. row ***************************
+       Table: staff_roles
+Create Table: CREATE TABLE `staff_roles` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `school_id` bigint unsigned NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `staff_roles_school_id_foreign` (`school_id`),
+  CONSTRAINT `staff_roles_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE students \G
+*************************** 1. row ***************************
+       Table: students
+Create Table: CREATE TABLE `students` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `school_id` bigint unsigned NOT NULL,
+  `first_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dob` date NOT NULL,
+  `gender` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `admission_date` date NOT NULL,
+  `grade_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `students_school_id_foreign` (`school_id`),
+  KEY `students_grade_id_foreign` (`grade_id`),
+  CONSTRAINT `students_grade_id_foreign` FOREIGN KEY (`grade_id`) REFERENCES `grades` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `students_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chk_students_gender` CHECK ((`gender` in (_utf8mb4'male',_utf8mb4'female',_utf8mb4'other')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE subjects \G
+*************************** 1. row ***************************
+       Table: subjects
+Create Table: CREATE TABLE `subjects` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `school_id` bigint unsigned NOT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `subjects_code_unique` (`code`),
+  KEY `subjects_school_id_foreign` (`school_id`),
+  CONSTRAINT `subjects_school_id_foreign` FOREIGN KEY (`school_id`) REFERENCES `schools` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE system_logs \G
+*************************** 1. row ***************************
+       Table: system_logs
+Create Table: CREATE TABLE `system_logs` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` bigint unsigned DEFAULT NULL,
+  `action` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `system_logs_user_id_foreign` (`user_id`),
+  CONSTRAINT `system_logs_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE timetable_entries \G
+*************************** 1. row ***************************
+       Table: timetable_entries
+Create Table: CREATE TABLE `timetable_entries` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `class_subject_id` bigint unsigned NOT NULL,
+  `day_of_week` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `timetable_entries_class_subject_id_foreign` (`class_subject_id`),
+  CONSTRAINT `timetable_entries_class_subject_id_foreign` FOREIGN KEY (`class_subject_id`) REFERENCES `class_subjects` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `chk_timetable_day` CHECK ((`day_of_week` in (_utf8mb4'Mon',_utf8mb4'Tue',_utf8mb4'Wed',_utf8mb4'Thu',_utf8mb4'Fri',_utf8mb4'Sat',_utf8mb4'Sun')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> SHOW CREATE TABLE users \G
+*************************** 1. row ***************************
+       Table: users
+Create Table: CREATE TABLE `users` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password_hash` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `person_type` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `person_id` bigint unsigned DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_username_unique` (`username`),
+  UNIQUE KEY `users_email_unique` (`email`),
+  CONSTRAINT `chk_users_person_type` CHECK ((`person_type` in (_utf8mb4'staff',_utf8mb4'student',_utf8mb4'guardian')))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+1 row in set (0.00 sec)
+
+mysql> 
+
+
