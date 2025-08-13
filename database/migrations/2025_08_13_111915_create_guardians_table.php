@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('guardians', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->bigIncrements('id');
+
+            $table->string('first_name', 100);
+            $table->string('last_name', 100);
+            $table->string('phone', 50);
+            $table->string('email', 255)->nullable();
+            $table->text('address')->nullable();
         });
     }
 
@@ -25,3 +30,4 @@ return new class extends Migration
         Schema::dropIfExists('guardians');
     }
 };
+
