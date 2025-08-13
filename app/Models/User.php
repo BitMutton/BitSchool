@@ -2,47 +2,53 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser as FilamentUserContract;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUserContract
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $table = 'users';
+
     protected $fillable = [
-        'name',
+        'username',
         'email',
-        'password',
+        'password_hash',
+        'person_type',
+        'person_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
-        'password',
+        'password_hash',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    // Map 'name' attribute for Filament display
+    public function getNameAttribute(): string
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->username;
+    }
+
+    // Map 'password' attribute
+    public function getPasswordAttribute(): string
+    {
+        return $this->password_hash;
+    }
+
+    public function setPasswordAttribute($value): void
+    {
+        $this->attributes['password_hash'] = bcrypt($value);
+    }
+
+    // Required by Filament v4
+    public function canAccessPanel(Panel $panel): bool
+    {
+        // Only staff can access Filament
+        return $this->person_type === 'staff';
     }
 }
+

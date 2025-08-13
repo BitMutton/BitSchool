@@ -1,7 +1,5 @@
 <?php
 
-use ZipArchive;
-
 return [
 
     'backup' => [
