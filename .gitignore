@@ -1,24 +1,45 @@
-*.log
-.DS_Store
+# Laravel environment & config
 .env
 .env.backup
 .env.production
+Homestead.json
+Homestead.yaml
+auth.json
+
+# Laravel logs & cache
+/storage/*.key
+/storage/*.log
+/storage/framework/cache/data
+/storage/framework/sessions
+/storage/framework/views
+/storage/paill
+/bootstrap/cache/*.php
+
+# Composer & PHP
+/vendor
 .phpactor.json
 .phpunit.result.cache
-/.fleet
-/.idea
-/.nova
 /.phpunit.cache
-/.vscode
-/.zed
-/auth.json
+
+# Node & npm
 /node_modules
 /public/build
 /public/hot
-/public/storage
-/storage/*.key
-/storage/pail
-/vendor
-Homestead.json
-Homestead.yaml
+/package-lock.json
+/yarn.lock
+
+# IDEs and editors
+/.idea
+/.vscode
+/.zed
+/.fleet
+
+# OS generated files
+.DS_Store
 Thumbs.db
+
+# Filament public assets (optional if you don't want them in git)
+public/css/
+public/js/
+public/fonts/
+

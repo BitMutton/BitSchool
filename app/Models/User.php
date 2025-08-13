@@ -20,6 +20,7 @@ class User extends Authenticatable implements FilamentUserContract
         'password_hash',
         'person_type',
         'person_id',
+         'password',  
     ];
 
     protected $hidden = [
