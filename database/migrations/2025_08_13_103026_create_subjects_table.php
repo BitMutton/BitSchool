@@ -12,7 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('subjects', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+
+            // Foreign key to schools table
+            $table->unsignedBigInteger('school_id');
+            $table->foreign('school_id')
+                  ->references('id')
+                  ->on('schools')
+                  ->onDelete('cascade');
+
+            // Subject details
+            $table->string('name', 100);
+            $table->string('code', 50)->unique();
+            $table->text('description')->nullable();
+
+            // Timestamps
             $table->timestamps();
         });
     }
@@ -25,3 +39,4 @@ return new class extends Migration
         Schema::dropIfExists('subjects');
     }
 };
+
