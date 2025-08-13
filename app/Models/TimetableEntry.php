@@ -20,6 +20,12 @@ class TimetableEntry extends Model
         'end_time',
     ];
 
+    protected $casts = [
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
+    ];
+
+    // Relationships
     public function class()
     {
         return $this->belongsTo(ClassModel::class, 'class_id');
@@ -27,12 +33,20 @@ class TimetableEntry extends Model
 
     public function subject()
     {
-        return $this->belongsTo(Subject::class);
+        return $this->belongsTo(Subject::class, 'subject_id');
     }
 
     public function teacher()
     {
         return $this->belongsTo(Staff::class, 'teacher_id');
+    }
+
+    // Accessors
+    public function getDurationAttribute()
+    {
+        return $this->start_time && $this->end_time
+            ? $this->end_time->diffInMinutes($this->start_time)
+            : null;
     }
 }
 

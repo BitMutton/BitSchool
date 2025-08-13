@@ -11,7 +11,9 @@ class Media extends Model
 
     protected $table = 'media';
 
-    // Mass assignable fields
+    /**
+     * Mass assignable fields
+     */
     protected $fillable = [
         'model_type',
         'model_id',
@@ -30,7 +32,9 @@ class Media extends Model
         'order_column',
     ];
 
-    // Cast JSON columns to arrays
+    /**
+     * Cast JSON columns to arrays
+     */
     protected $casts = [
         'manipulations' => 'array',
         'custom_properties' => 'array',
@@ -41,7 +45,7 @@ class Media extends Model
     ];
 
     /**
-     * Polymorphic relationship to any model.
+     * Polymorphic relationship to any model
      */
     public function model()
     {
@@ -49,11 +53,19 @@ class Media extends Model
     }
 
     /**
-     * Optional: scope to a collection name.
+     * Scope query by collection name
      */
-    public function scopeCollection($query, $collectionName)
+    public function scopeCollection($query, string $collectionName)
     {
         return $query->where('collection_name', $collectionName);
+    }
+
+    /**
+     * Optional: Accessor for full file path
+     */
+    public function getFullPathAttribute(): string
+    {
+        return $this->disk && $this->file_name ? "{$this->disk}/{$this->file_name}" : '';
     }
 }
 

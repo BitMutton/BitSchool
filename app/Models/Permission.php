@@ -9,14 +9,19 @@ class Permission extends Model
 {
     use HasFactory;
 
+    protected $table = 'permissions';
+
     protected $fillable = [
         'name',
         'description',
     ];
 
+    /**
+     * Many-to-Many relationship with roles via role_permissions
+     */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'role_permissions');
+        return $this->belongsToMany(Role::class, 'role_permissions', 'permission_id', 'role_id');
     }
 }
 

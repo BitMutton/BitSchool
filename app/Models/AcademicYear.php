@@ -3,6 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -17,6 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
  * @property \Illuminate\Support\Carbon $updated_at
  *
  * @property School $school
+ * @property \Illuminate\Database\Eloquent\Collection|ClassModel[] $classes
+ * @property \Illuminate\Database\Eloquent\Collection|Exam[] $exams
+ * @property \Illuminate\Database\Eloquent\Collection|FeeStructure[] $feeStructures
+ * @property \Illuminate\Database\Eloquent\Collection|StaffAssignment[] $staffAssignments
  */
 class AcademicYear extends Model
 {
@@ -41,10 +46,30 @@ class AcademicYear extends Model
     const STATUS_ARCHIVED = 'archived';
     const STATUS_UPCOMING = 'upcoming';
 
-    // Relationship
+    // Relationships
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class);
+    }
+
+    public function classes(): HasMany
+    {
+        return $this->hasMany(ClassModel::class, 'academic_year_id');
+    }
+
+    public function exams(): HasMany
+    {
+        return $this->hasMany(Exam::class, 'academic_year_id');
+    }
+
+    public function feeStructures(): HasMany
+    {
+        return $this->hasMany(FeeStructure::class, 'academic_year_id');
+    }
+
+    public function staffAssignments(): HasMany
+    {
+        return $this->hasMany(StaffAssignment::class, 'academic_year_id');
     }
 
     // Scopes
@@ -67,6 +92,16 @@ class AcademicYear extends Model
     public function isActive(): bool
     {
         return $this->status === self::STATUS_ACTIVE;
+    }
+
+    public function isUpcoming(): bool
+    {
+        return $this->status === self::STATUS_UPCOMING;
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->status === self::STATUS_ARCHIVED;
     }
 }
 

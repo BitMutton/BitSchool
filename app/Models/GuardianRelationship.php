@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class GuardianRelationship extends Model
 {
@@ -15,14 +16,15 @@ class GuardianRelationship extends Model
         'relationship_type',
     ];
 
-    public function student()
+    // Relationships
+    public function student(): BelongsTo
     {
-        return $this->belongsTo(Student::class);
+        return $this->belongsTo(Student::class, 'student_id');
     }
 
-    public function guardian()
+    public function guardian(): BelongsTo
     {
-        return $this->belongsTo(Guardian::class);
+        return $this->belongsTo(Guardian::class, 'guardian_id');
     }
 }
 

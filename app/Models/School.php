@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class School extends Model
 {
@@ -17,34 +18,40 @@ class School extends Model
     ];
 
     // Relationships
-    public function grades()
+
+    public function grades(): HasMany
     {
-        return $this->hasMany(Grade::class);
+        return $this->hasMany(Grade::class, 'school_id');
     }
 
-    public function students()
+    public function students(): HasMany
     {
-        return $this->hasMany(Student::class);
+        return $this->hasMany(Student::class, 'school_id');
     }
 
-    public function staff()
+    public function staff(): HasMany
     {
-        return $this->hasMany(Staff::class);
+        return $this->hasMany(Staff::class, 'school_id');
     }
 
-    public function staffRoles()
+    public function staffRoles(): HasMany
     {
-        return $this->hasMany(StaffRole::class);
+        return $this->hasMany(StaffRole::class, 'school_id');
     }
 
-    public function academicYears()
+    public function academicYears(): HasMany
     {
-        return $this->hasMany(AcademicYear::class);
+        return $this->hasMany(AcademicYear::class, 'school_id');
     }
 
-    public function subjects()
+    public function subjects(): HasMany
     {
-        return $this->hasMany(Subject::class);
+        return $this->hasMany(Subject::class, 'school_id');
+    }
+
+    public function announcements(): HasMany
+    {
+        return $this->hasMany(Announcement::class, 'school_id');
     }
 }
 

@@ -27,28 +27,37 @@ class User extends Authenticatable implements FilamentUserContract
         'remember_token',
     ];
 
-    // Map 'name' attribute for Filament display
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+    ];
+
+    // Accessors
     public function getNameAttribute(): string
     {
         return $this->username;
     }
 
-    // Map 'password' attribute
     public function getPasswordAttribute(): string
     {
         return $this->password_hash;
     }
 
+    // Mutators
     public function setPasswordAttribute($value): void
     {
         $this->attributes['password_hash'] = bcrypt($value);
     }
 
-    // Required by Filament v4
+    // Filament access control
     public function canAccessPanel(Panel $panel): bool
     {
-        // Only staff can access Filament
         return $this->person_type === 'staff';
+    }
+
+    // Polymorphic relation to staff or student
+    public function person()
+    {
+        return $this->morphTo();
     }
 }
 

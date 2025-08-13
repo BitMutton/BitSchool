@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Guardian extends Model
 {
@@ -17,7 +18,8 @@ class Guardian extends Model
         'address',
     ];
 
-    public function students()
+    // Relationships
+    public function students(): BelongsToMany
     {
         return $this->belongsToMany(
             Student::class,
@@ -27,7 +29,8 @@ class Guardian extends Model
         )->withPivot('relationship_type');
     }
 
-    public function getFullNameAttribute()
+    // Accessors
+    public function getFullNameAttribute(): string
     {
         return "{$this->first_name} {$this->last_name}";
     }

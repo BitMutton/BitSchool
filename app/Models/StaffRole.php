@@ -15,6 +15,12 @@ class StaffRole extends Model
         'description',
     ];
 
+    protected $dates = [
+        'created_at',
+        'updated_at',
+    ];
+
+    // Relationships
     public function school()
     {
         return $this->belongsTo(School::class);

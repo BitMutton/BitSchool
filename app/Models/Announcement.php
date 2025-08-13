@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Announcement extends Model
 {
@@ -26,14 +27,15 @@ class Announcement extends Model
     ];
 
     // Relationships
-    public function school()
+
+    public function school(): BelongsTo
     {
-        return $this->belongsTo(School::class);
+        return $this->belongsTo(School::class, 'school_id');
     }
 
-    public function staff()
+    public function staff(): BelongsTo
     {
-        return $this->belongsTo(Staff::class);
+        return $this->belongsTo(Staff::class, 'staff_id');
     }
 }
 

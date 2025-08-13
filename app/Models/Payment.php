@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends Model
 {
@@ -18,18 +19,23 @@ class Payment extends Model
         'payment_method',
     ];
 
+    protected $casts = [
+        'amount' => 'decimal:2',
+        'payment_date' => 'date',
+    ];
+
     // Relationships
-    public function invoice()
+    public function invoice(): BelongsTo
     {
         return $this->belongsTo(Invoice::class, 'invoice_id');
     }
 
-    // Payment method options
+    // Payment method constants
     const METHOD_CASH = 'cash';
     const METHOD_CARD = 'card';
     const METHOD_BANK_TRANSFER = 'bank_transfer';
 
-    public static function getMethods()
+    public static function getMethods(): array
     {
         return [
             self::METHOD_CASH,

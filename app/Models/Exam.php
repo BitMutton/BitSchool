@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Exam extends Model
 {
@@ -24,22 +26,22 @@ class Exam extends Model
     ];
 
     // Relationships
-    public function academicYear()
+    public function academicYear(): BelongsTo
     {
         return $this->belongsTo(AcademicYear::class, 'academic_year_id');
     }
 
-    public function grade()
+    public function grade(): BelongsTo
     {
         return $this->belongsTo(Grade::class, 'grade_id');
     }
 
-    public function subject()
+    public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class, 'subject_id');
     }
 
-    public function results()
+    public function results(): HasMany
     {
         return $this->hasMany(ExamResult::class, 'exam_id');
     }

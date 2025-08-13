@@ -17,9 +17,15 @@ class Student extends Model
         'gender',
         'admission_date',
         'grade_id',
+        'class_id',
     ];
 
-    protected $dates = ['dob', 'admission_date'];
+    protected $dates = [
+        'dob',
+        'admission_date',
+        'created_at',
+        'updated_at',
+    ];
 
     // Relationships
     public function school()
@@ -32,6 +38,11 @@ class Student extends Model
         return $this->belongsTo(Grade::class);
     }
 
+    public function class()
+    {
+        return $this->belongsTo(ClassModel::class, 'class_id');
+    }
+
     public function guardians()
     {
         return $this->belongsToMany(
@@ -40,6 +51,26 @@ class Student extends Model
             'student_id',
             'guardian_id'
         )->withPivot('relationship_type');
+    }
+
+    public function attendanceRecords()
+    {
+        return $this->hasMany(AttendanceRecord::class, 'student_id');
+    }
+
+    public function examResults()
+    {
+        return $this->hasMany(ExamResult::class, 'student_id');
+    }
+
+    public function disciplinaryRecords()
+    {
+        return $this->hasMany(DisciplinaryRecord::class, 'student_id');
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'student_id');
     }
 
     // Accessors
