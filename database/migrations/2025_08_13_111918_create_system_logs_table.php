@@ -12,8 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('system_logs', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->bigIncrements('id');
+
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
+
+            $table->text('action');
+            $table->timestamp('timestamp')->useCurrent();
         });
     }
 
@@ -25,3 +33,4 @@ return new class extends Migration
         Schema::dropIfExists('system_logs');
     }
 };
+

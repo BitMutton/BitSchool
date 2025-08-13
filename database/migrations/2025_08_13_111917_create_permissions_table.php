@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('permissions', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            $table->bigIncrements('id');
+            $table->string('name', 100);
+            $table->text('description')->nullable();
         });
     }
 
@@ -25,3 +26,4 @@ return new class extends Migration
         Schema::dropIfExists('permissions');
     }
 };
+
