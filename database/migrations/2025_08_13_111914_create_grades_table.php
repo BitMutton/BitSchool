@@ -14,19 +14,17 @@ return new class extends Migration
         Schema::create('grades', function (Blueprint $table) {
             $table->bigIncrements('id');
 
-            // Foreign key to schools table
             $table->unsignedBigInteger('school_id');
             $table->foreign('school_id')
-                  ->references('id')
-                  ->on('schools')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('schools')
+                ->onDelete('cascade');
 
-            // Grade details
             $table->string('name', 100);
             $table->integer('level_order');
 
-            // Timestamps
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

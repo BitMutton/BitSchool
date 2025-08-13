@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -13,24 +14,23 @@ return new class extends Migration
     {
         Schema::create('academic_years', function (Blueprint $table) {
             $table->bigIncrements('id');
-            
-            // Foreign key to schools table
+
             $table->unsignedBigInteger('school_id');
             $table->foreign('school_id')
-                  ->references('id')
-                  ->on('schools')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('schools')
+                ->onDelete('cascade');
 
-            // Dates
             $table->date('start_date');
             $table->date('end_date');
+            $table->string('status', 20);
 
-            // Status with limited values
-            $table->enum('status', ['active', 'archived', 'upcoming'])->nullable();
-
-            // Created & updated timestamps
-            $table->timestamps();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
+
+        // Add check constraint via raw SQL (works in PostgreSQL and MySQL 8+)
+        DB::statement("ALTER TABLE academic_years ADD CONSTRAINT chk_academic_years_status CHECK (status IN ('active', 'archived', 'upcoming'))");
     }
 
     /**

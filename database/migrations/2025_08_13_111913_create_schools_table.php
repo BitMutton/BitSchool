@@ -12,12 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('schools', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id'); // BIGSERIAL equivalent
             $table->string('name', 255);
             $table->text('address')->nullable();
             $table->string('phone', 50)->nullable();
             $table->string('email', 255)->nullable();
-            $table->timestamps(); // creates created_at and updated_at columns
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
         });
     }
 

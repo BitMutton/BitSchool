@@ -12,18 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('staff_roles', function (Blueprint $table) {
-            $table->bigIncrements('id');
-
-            // Foreign key to schools table
-            $table->unsignedBigInteger('school_id');
-            $table->foreign('school_id')
-                  ->references('id')
-                  ->on('schools')
-                  ->onDelete('cascade');
-
-            // Role details
-            $table->string('name', 100);
-            $table->text('description')->nullable();
+            $table->id();
+            $table->timestamps();
         });
     }
 
@@ -35,4 +25,3 @@ return new class extends Migration
         Schema::dropIfExists('staff_roles');
     }
 };
-
