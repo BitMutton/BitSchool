@@ -25,6 +25,14 @@ class Staff extends Model
         'hire_date' => 'date',
     ];
 
+
+// App\Models\Staff.php
+
+public function getFullNameAttribute()
+{
+    return $this->first_name . ' ' . $this->last_name;
+}
+
     // Relationships
     public function school(): BelongsTo
     {
@@ -51,10 +59,5 @@ class Staff extends Model
         return $this->hasMany(DisciplinaryRecord::class, 'staff_id');
     }
 
-    // Accessors
-    public function getFullNameAttribute(): string
-    {
-        return "{$this->first_name} {$this->last_name}";
-    }
 }
 
