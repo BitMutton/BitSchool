@@ -3,6 +3,7 @@
 namespace App\Filament\AcademicManagementPanel\Resources\Staff\Schemas;
 
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -12,9 +13,11 @@ class StaffForm
     {
         return $schema
             ->components([
-                TextInput::make('school_id')
-                    ->required()
-                    ->numeric(),
+                Select::make('school_id')
+                    ->relationship('school', 'name')
+                    ->required(),
+                Select::make('role_id')
+                    ->relationship('role', 'name'),
                 TextInput::make('first_name')
                     ->required(),
                 TextInput::make('last_name')

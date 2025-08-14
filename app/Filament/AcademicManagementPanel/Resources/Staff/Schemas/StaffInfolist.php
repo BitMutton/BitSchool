@@ -11,7 +11,9 @@ class StaffInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('school_id')
+                TextEntry::make('school.name')
+                    ->numeric(),
+                TextEntry::make('role.name')
                     ->numeric(),
                 TextEntry::make('first_name'),
                 TextEntry::make('last_name'),

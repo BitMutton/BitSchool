@@ -23,6 +23,9 @@ class ClassModel extends Model
     ];
 
     // Relationships
+
+
+
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class, 'school_id');

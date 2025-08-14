@@ -22,7 +22,7 @@ class ClassModelResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
-    protected static ?string $recordTitleAttribute = 'Class';
+    protected static ?string $recordTitleAttribute = 'Classes';
 
     public static function form(Schema $schema): Schema
     {

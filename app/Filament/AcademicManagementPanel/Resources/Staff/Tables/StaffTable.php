@@ -15,7 +15,10 @@ class StaffTable
     {
         return $table
             ->columns([
-                TextColumn::make('school_id')
+                TextColumn::make('school.name')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('role.name')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('first_name')

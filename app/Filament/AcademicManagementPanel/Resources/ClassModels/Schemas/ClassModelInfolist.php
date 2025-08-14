@@ -20,6 +20,10 @@ class ClassModelInfolist
                 TextEntry::make('name'),
                 TextEntry::make('classTeacher.id')
                     ->numeric(),
+                TextEntry::make('created_at')
+                    ->dateTime(),
+                TextEntry::make('updated_at')
+                    ->dateTime(),
             ]);
     }
 }
