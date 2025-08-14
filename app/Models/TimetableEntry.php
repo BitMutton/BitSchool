@@ -13,59 +13,42 @@ class TimetableEntry extends Model
 
     protected $fillable = [
         'class_subject_id',
-        'room',
+        'room_id',
+        'bell_schedule_id',
         'period',
         'day',
     ];
 
-    /**
-     * Relationships
-     */
-
-
-
-
-public function bellSchedule()
-{
-    return $this->belongsTo(BellSchedule::class);
-}
+    // Relationships
+    public function bellSchedule()
+    {
+        return $this->belongsTo(BellSchedule::class);
+    }
 
     public function classSubject()
     {
         return $this->belongsTo(ClassSubject::class, 'class_subject_id');
     }
 
-    public function getClassAttribute()
+    // Accessors
+    public function schoolClass()
     {
         return $this->classSubject?->class;
     }
 
-    public function getSubjectAttribute()
+    public function subject()
     {
         return $this->classSubject?->subject;
     }
 
-    public function getTeacherAttribute()
+    public function teacher()
     {
         return $this->classSubject?->teacher;
     }
 
-    /**
-     * Accessor for a readable label
-     */
-    public function getLabelAttribute()
+    public function room()
     {
-        if (!$this->classSubject) {
-            return null;
-        }
-
-        $className = $this->class?->name ?? 'Unknown Class';
-        $subjectName = $this->subject?->name ?? 'Unknown Subject';
-        $teacherName = $this->teacher
-            ? $this->teacher->first_name . ' ' . $this->teacher->last_name
-            : 'Unknown Teacher';
-
-        return "{$className} - {$subjectName} ({$teacherName})";
+        return $this->belongsTo(Room::class, 'room_id');
     }
 }
 
