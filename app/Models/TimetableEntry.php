@@ -12,41 +12,51 @@ class TimetableEntry extends Model
     protected $table = 'timetable_entries';
 
     protected $fillable = [
-        'class_id',
-        'subject_id',
-        'teacher_id',
-        'day_of_week',
-        'start_time',
-        'end_time',
+        'class_subject_id',
+        'room',
+        'period',
+        'day',
     ];
 
-    protected $casts = [
-        'start_time' => 'datetime:H:i',
-        'end_time' => 'datetime:H:i',
-    ];
-
-    // Relationships
-    public function class()
+    /**
+     * Relationships
+     */
+    public function classSubject()
     {
-        return $this->belongsTo(ClassModel::class, 'class_id');
+        return $this->belongsTo(ClassSubject::class, 'class_subject_id');
     }
 
-    public function subject()
+    public function getClassAttribute()
     {
-        return $this->belongsTo(Subject::class, 'subject_id');
+        return $this->classSubject?->class;
     }
 
-    public function teacher()
+    public function getSubjectAttribute()
     {
-        return $this->belongsTo(Staff::class, 'teacher_id');
+        return $this->classSubject?->subject;
     }
 
-    // Accessors
-    public function getDurationAttribute()
+    public function getTeacherAttribute()
     {
-        return $this->start_time && $this->end_time
-            ? $this->end_time->diffInMinutes($this->start_time)
-            : null;
+        return $this->classSubject?->teacher;
+    }
+
+    /**
+     * Accessor for a readable label
+     */
+    public function getLabelAttribute()
+    {
+        if (!$this->classSubject) {
+            return null;
+        }
+
+        $className = $this->class?->name ?? 'Unknown Class';
+        $subjectName = $this->subject?->name ?? 'Unknown Subject';
+        $teacherName = $this->teacher
+            ? $this->teacher->first_name . ' ' . $this->teacher->last_name
+            : 'Unknown Teacher';
+
+        return "{$className} - {$subjectName} ({$teacherName})";
     }
 }
 
