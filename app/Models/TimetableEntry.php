@@ -21,6 +21,15 @@ class TimetableEntry extends Model
     /**
      * Relationships
      */
+
+
+
+
+public function bellSchedule()
+{
+    return $this->belongsTo(BellSchedule::class);
+}
+
     public function classSubject()
     {
         return $this->belongsTo(ClassSubject::class, 'class_subject_id');
