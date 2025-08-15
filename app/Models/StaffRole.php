@@ -9,15 +9,11 @@ class StaffRole extends Model
 {
     use HasFactory;
 
+    // Allow mass assignment for these fields
     protected $fillable = [
         'school_id',
         'name',
         'description',
-    ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at',
     ];
 
     // Relationships
