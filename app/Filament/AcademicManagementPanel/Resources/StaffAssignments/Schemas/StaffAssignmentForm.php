@@ -16,42 +16,40 @@ class StaffAssignmentForm
     {
         return $schema
             ->components([
-              
-
-                Select::make('role_id')
-                    ->label('Role')
-                    ->options(StaffRole::all()->pluck('name', 'id'))
-                    ->required(),
-
-                Select::make('grade_id')
-                    ->label('Grade')
-                    ->options(Grade::all()->pluck('name', 'id'))
-                    ->nullable(),
-
-                Select::make('subject_id')
-                    ->label('Subject')
-                    ->options(Subject::all()->pluck('name', 'id'))
-                    ->nullable(),
-
+                // Staff dropdown using relationship
                Select::make('staff_id')
     ->label('Staff')
-    ->options(
-        Staff::all()->mapWithKeys(fn($s) => [
-            $s->id => $s->name ?? 'Unknown Staff'
-        ])
-    )
+    ->options(function () {
+        return Staff::all()->mapWithKeys(fn($staff) => [
+            $staff->id => $staff->first_name . ' ' . $staff->last_name
+        ]);
+    })
     ->searchable()
     ->required(),
 
-Select::make('academic_year_id')
+
+                // Role dropdown using relationship
+                Select::make('role_id')
+                    ->label('Role')
+                    ->relationship('role', 'name')
+                    ->required(),
+
+                // Grade dropdown
+                Select::make('grade_id')
+                    ->label('Grade')
+                    ->relationship('grade', 'name')
+                    ->nullable(),
+
+                // Subject dropdown
+                Select::make('subject_id')
+                    ->label('Subject')
+                    ->relationship('subject', 'name')
+                    ->nullable(),
+
+                // Academic Year dropdown
+               Select::make('academic_year_id')
     ->label('Academic Year')
-    ->options(
-        AcademicYear::all()->mapWithKeys(fn($year) => [
-            $year->id => ($year->start_year && $year->end_year) 
-                        ? "{$year->start_year} - {$year->end_year}" 
-                        : 'Unknown Year'
-        ])
-    )
+    ->options(AcademicYear::all()->pluck('id', 'id'))
     ->required(),
 
             ]);
