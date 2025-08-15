@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\AcademicManagementPanel\Resources\TimetableEntries\Tables;
+namespace App\Filament\AcademicManagementPanel\Resources\StaffAssignments\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
@@ -9,31 +9,25 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class TimetableEntriesTable
+class StaffAssignmentsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                TextColumn::make('classSubject.id')
+                TextColumn::make('staff_id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('day_of_week'),
-                TextColumn::make('bellSchedule.name')
+                TextColumn::make('role_id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('period')
+                TextColumn::make('grade_id')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('room.name')
+                TextColumn::make('subject_id')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('academic_year_id')
                     ->numeric()
                     ->sortable(),
             ])
