@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,10 +17,14 @@ class TimetableEntry extends Model
         'room_id',
         'bell_schedule_id',
         'period',
+        'start_time',
+        'end_time',
     ];
 
     protected $casts = [
         'day_of_week' => 'string',
+        'start_time' => 'datetime:H:i',
+        'end_time' => 'datetime:H:i',
     ];
 
     // Relationships
@@ -28,20 +33,22 @@ class TimetableEntry extends Model
         return $this->belongsTo(ClassSubject::class, 'class_subject_id');
     }
 
+    // Access teacher through classSubject relationship
     public function teacher(): BelongsTo
     {
-        // Access teacher through class_subject relationship
-        return $this->classSubject()->with('teacher')->getRelation('teacher');
+        return $this->classSubject()->getRelation('teacher');
+        // Alternative: if ClassSubject has teacher() relationship:
+        // return $this->classSubject->teacher();
     }
 
-    public function class(): BelongsTo
+    public function classroom(): BelongsTo
     {
-        return $this->classSubject()->with('class')->getRelation('class');
+        return $this->classSubject()->getRelation('class');
     }
 
     public function subject(): BelongsTo
     {
-        return $this->classSubject()->with('subject')->getRelation('subject');
+        return $this->classSubject()->getRelation('subject');
     }
 
     public function room(): BelongsTo
@@ -54,7 +61,7 @@ class TimetableEntry extends Model
         return $this->belongsTo(BellSchedule::class, 'bell_schedule_id');
     }
 
-    // Accessors for Carbon
+    // Optional accessors
     public function getStartTimeAttribute($value)
     {
         return Carbon::parse($value);
