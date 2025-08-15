@@ -15,8 +15,6 @@ class ClassSubjectInfolist
                     ->numeric(),
                 TextEntry::make('subject.name')
                     ->numeric(),
-                TextEntry::make('teacher.id')
-                    ->numeric(),
                 TextEntry::make('remarks'),
                 TextEntry::make('created_by')
                     ->numeric(),

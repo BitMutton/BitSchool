@@ -18,7 +18,6 @@ class ClassSubject extends Model
     protected $fillable = [
         'class_id',
         'subject_id',
-        'teacher_id',
         'remarks',
         'created_by',
         'updated_by',
@@ -45,16 +44,6 @@ class ClassSubject extends Model
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class, 'subject_id');
-    }
-
-    public function teacher(): BelongsTo
-    {
-        return $this->belongsTo(Staff::class, 'teacher_id');
-    }
-
-    public function timetableEntries(): HasMany
-    {
-        return $this->hasMany(TimetableEntry::class, 'class_subject_id');
     }
 
     public function creator(): BelongsTo

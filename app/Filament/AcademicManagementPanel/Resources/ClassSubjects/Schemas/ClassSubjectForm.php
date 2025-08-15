@@ -18,9 +18,6 @@ class ClassSubjectForm
                 Select::make('subject_id')
                     ->relationship('subject', 'name')
                     ->required(),
-                Select::make('teacher_id')
-                    ->relationship('teacher', 'id')
-                    ->required(),
                 TextInput::make('remarks'),
                 TextInput::make('created_by')
                     ->numeric(),

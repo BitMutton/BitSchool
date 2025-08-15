@@ -24,9 +24,6 @@ class ClassSubjectsTable
                 TextColumn::make('subject.name')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('teacher.id')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('remarks')
                     ->searchable(),
                 TextColumn::make('created_by')
