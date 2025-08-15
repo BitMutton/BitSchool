@@ -11,16 +11,17 @@ class StaffAssignmentInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('staff_id')
-                    ->numeric(),
-                TextEntry::make('role_id')
-                    ->numeric(),
-                TextEntry::make('grade_id')
-                    ->numeric(),
-                TextEntry::make('subject_id')
-                    ->numeric(),
-                TextEntry::make('academic_year_id')
-                    ->numeric(),
+                TextEntry::make('staff.name')
+                    ->label('Staff Name'),
+                TextEntry::make('role.name')
+                    ->label('Role'),
+                TextEntry::make('grade.name')
+                    ->label('Grade'),
+                TextEntry::make('subject.name')
+                    ->label('Subject'),
+                TextEntry::make('academicYear.name')
+                    ->label('Academic Year'),
             ]);
     }
 }
+
