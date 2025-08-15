@@ -15,16 +15,18 @@ class StaffRoleForm
             ->components([
                 Select::make('school_id')
                     ->label('School')
-                    ->relationship('school', 'name') // assumes School model has 'name'
+                    ->relationship('school', 'name')
                     ->required(),
 
                 TextInput::make('name')
                     ->label('Role Name')
-                    ->required(),
+                    ->required()
+                    ->maxLength(100),
 
                 Textarea::make('description')
                     ->label('Description')
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->maxLength(500),
             ]);
     }
 }

@@ -16,6 +16,9 @@ class StaffRole extends Model
         'description',
     ];
 
+    // Automatically manage timestamps
+    public $timestamps = true;
+
     // Relationships
     public function school()
     {
