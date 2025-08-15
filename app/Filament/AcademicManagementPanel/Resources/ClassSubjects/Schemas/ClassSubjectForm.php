@@ -12,9 +12,9 @@ class ClassSubjectForm
     {
         return $schema
             ->components([
-                Select::make('class_id')
-                    ->relationship('class', 'name')
-                    ->required(),
+                TextInput::make('class_id')
+                    ->required()
+                    ->numeric(),
                 Select::make('subject_id')
                     ->relationship('subject', 'name')
                     ->required(),
@@ -22,7 +22,10 @@ class ClassSubjectForm
                     ->relationship('teacher', 'id')
                     ->required(),
                 TextInput::make('remarks'),
-               
+                TextInput::make('created_by')
+                    ->numeric(),
+                TextInput::make('updated_by')
+                    ->numeric(),
             ]);
     }
 }

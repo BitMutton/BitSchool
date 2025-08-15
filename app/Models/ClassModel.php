@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Validation\ValidationException;
 
 class ClassModel extends Model
 {
@@ -22,9 +23,27 @@ class ClassModel extends Model
         'academic_year_id',
     ];
 
+   protected static function boot()
+{
+    parent::boot();
+
+    static::saving(function ($model) {
+        if (!is_null($model->class_teacher_id)) {
+            $exists = static::where('class_teacher_id', $model->class_teacher_id)
+                ->where('id', '!=', $model->id)
+                ->exists();
+
+            if ($exists) {
+                throw ValidationException::withMessages([
+                    'class_teacher_id' => 'The selected teacher is already assigned as a class teacher to another class.',
+                ]);
+            }
+        }
+    });
+}
+
+
     // Relationships
-
-
 
     public function school(): BelongsTo
     {

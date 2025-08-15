@@ -18,7 +18,7 @@ class ClassSubjectsTable
     {
         return $table
             ->columns([
-                TextColumn::make('class.name')
+                TextColumn::make('class_id')
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('subject.name')

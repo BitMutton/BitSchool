@@ -15,16 +15,31 @@ class ClassModelForm
                 Select::make('school_id')
                     ->relationship('school', 'name')
                     ->required(),
+
                 Select::make('grade_id')
                     ->relationship('grade', 'name')
                     ->required(),
+
                 Select::make('academic_year_id')
                     ->relationship('academicYear', 'id')
                     ->required(),
+
                 TextInput::make('name')
                     ->required(),
-                Select::make('class_teacher_id')
-                    ->relationship('classTeacher', 'id'),
+
+               Select::make('class_teacher_id')
+    ->label('Class Teacher')
+    ->options(fn () => \App\Models\Staff::all()->pluck('full_name', 'id'))
+    ->nullable()
+    ->rules([
+        'nullable',
+        'unique:classes,class_teacher_id,{{record}}',
+    ])
+    ->validationMessages([
+        'unique' => 'This teacher is already assigned as a class teacher for another class.',
+    ]),
+
             ]);
     }
 }
+

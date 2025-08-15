@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Auth;
 
 class ClassSubject extends Model
 {
@@ -29,9 +30,14 @@ class ClassSubject extends Model
         'deleted_at',
     ];
 
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
 
-
-    public function class(): BelongsTo
+    // Renamed to avoid reserved keyword "class" issues
+    public function schoolClass(): BelongsTo
     {
         return $this->belongsTo(ClassModel::class, 'class_id');
     }
@@ -60,20 +66,26 @@ class ClassSubject extends Model
     {
         return $this->belongsTo(Staff::class, 'updated_by');
     }
-// In ClassSubject.php model
-protected static function boot()
-{
-    parent::boot();
 
-    static::creating(function ($model) {
-        $model->created_by = auth()->id(); // or auth()->user()->staff->id if needed
-        $model->updated_by = auth()->id();
-    });
+    /*
+    |--------------------------------------------------------------------------
+    | Model Events for created_by / updated_by
+    |--------------------------------------------------------------------------
+    */
+    protected static function boot()
+    {
+        parent::boot();
 
-    static::updating(function ($model) {
-        $model->updated_by = auth()->id();
-    });
-}
+        static::creating(function ($model) {
+            $staffId = Auth::user()?->staff?->id ?? null;
+            $model->created_by = $staffId;
+            $model->updated_by = $staffId;
+        });
 
+        static::updating(function ($model) {
+            $staffId = Auth::user()?->staff?->id ?? null;
+            $model->updated_by = $staffId;
+        });
+    }
 }
 

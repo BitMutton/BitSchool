@@ -11,14 +11,17 @@ class ClassSubjectInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('class.name')
+                TextEntry::make('class_id')
                     ->numeric(),
                 TextEntry::make('subject.name')
                     ->numeric(),
                 TextEntry::make('teacher.id')
                     ->numeric(),
                 TextEntry::make('remarks'),
-               
+                TextEntry::make('created_by')
+                    ->numeric(),
+                TextEntry::make('updated_by')
+                    ->numeric(),
                 TextEntry::make('created_at')
                     ->dateTime(),
                 TextEntry::make('updated_at')
