@@ -13,6 +13,7 @@ class TimetableEntry extends Model
 
     protected $fillable = [
         'class_subject_id',
+        'staff_id',          // Teacher assigned for this timetable slot
         'day_of_week',
         'room_id',
         'bell_schedule_id',
@@ -33,22 +34,9 @@ class TimetableEntry extends Model
         return $this->belongsTo(ClassSubject::class, 'class_subject_id');
     }
 
-    // Access teacher through classSubject relationship
-    public function teacher(): BelongsTo
+    public function staff(): BelongsTo
     {
-        return $this->classSubject()->getRelation('teacher');
-        // Alternative: if ClassSubject has teacher() relationship:
-        // return $this->classSubject->teacher();
-    }
-
-    public function classroom(): BelongsTo
-    {
-        return $this->classSubject()->getRelation('class');
-    }
-
-    public function subject(): BelongsTo
-    {
-        return $this->classSubject()->getRelation('subject');
+        return $this->belongsTo(Staff::class, 'staff_id'); // teacher for this slot
     }
 
     public function room(): BelongsTo
@@ -71,5 +59,21 @@ class TimetableEntry extends Model
     {
         return Carbon::parse($value);
     }
+
+    // Display helper for Filament forms / tables
+    public function getClassSubjectDisplayAttribute(): string
+    {
+        $cs = $this->classSubject;
+        return $cs
+            ? ($cs->schoolClass?->name ?? 'Unknown Class')
+              . ' - '
+              . ($cs->subject?->name ?? 'Unknown Subject')
+              . ' ('
+              . ($this->staff?->full_name ?? 'Unknown Teacher') // Use staff assigned here
+              . ')'
+            : '';
+    }
+
+
 }
 

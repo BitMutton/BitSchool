@@ -63,16 +63,10 @@ class Staff extends Model
         return $this->hasMany(ClassSubject::class, 'teacher_id');
     }
 
-    public function timetableEntries(): HasManyThrough
-    {
-        return $this->hasManyThrough(
-            TimetableEntry::class,
-            ClassSubject::class,
-            'teacher_id',        // Foreign key on class_subjects table
-            'class_subject_id',  // Foreign key on timetable_entries table
-            'id',                // Local key on staff table
-            'id'                 // Local key on class_subjects table
-        );
-    }
+   public function timetableEntries(): HasMany
+{
+    return $this->hasMany(TimetableEntry::class, 'staff_id');
+}
+
 }
 

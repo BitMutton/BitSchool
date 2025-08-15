@@ -15,27 +15,47 @@ class TimetableEntriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('classSubject.id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('day_of_week'),
+                TextColumn::make('classSubjectDisplay')
+                    ->label('Class & Subject')
+                    ->sortable()
+                    ->searchable(),
+
+               TextColumn::make('staff.full_name')
+    ->label('Teacher')
+    ->sortable()
+    ->searchable(),
+
+
+                TextColumn::make('day_of_week')
+                    ->label('Day')
+                    ->sortable()
+                    ->searchable(),
+
                 TextColumn::make('bellSchedule.name')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Bell Schedule')
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->searchable(),
+
                 TextColumn::make('period')
-                    ->numeric()
+                    ->label('Period')
                     ->sortable(),
+
                 TextColumn::make('room.name')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Room')
+                    ->sortable()
+                    ->searchable(),
+
+                TextColumn::make('created_at')
+                    ->label('Created')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('updated_at')
+                    ->label('Updated')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -51,3 +71,4 @@ class TimetableEntriesTable
             ]);
     }
 }
+
