@@ -36,14 +36,16 @@ class AcademicYear extends Model
 
     protected $table = 'academic_years';
 
-    protected $fillable = [
-        'school_id',
-        'start_date',
-        'end_date',
-        'status',
-        'created_by',
-        'updated_by',
-    ];
+   protected $fillable = [
+    'school_id',
+    'start_date',
+    'end_date',
+    'name',
+    'status',
+    'created_by',
+    'updated_by',
+];
+
 
     protected $dates = [
         'start_date',
@@ -126,5 +128,10 @@ class AcademicYear extends Model
     {
         return $this->status === self::STATUS_ARCHIVED;
     }
+public function getDisplayNameAttribute(): string
+{
+    return $this->name ?? "{$this->start_date} - {$this->end_date}";
+}
+
 }
 

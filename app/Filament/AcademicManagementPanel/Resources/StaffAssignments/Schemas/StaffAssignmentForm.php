@@ -16,17 +16,16 @@ class StaffAssignmentForm
     {
         return $schema
             ->components([
-                // Staff dropdown using relationship
-               Select::make('staff_id')
-    ->label('Staff')
-    ->options(function () {
-        return Staff::all()->mapWithKeys(fn($staff) => [
-            $staff->id => $staff->first_name . ' ' . $staff->last_name
-        ]);
-    })
-    ->searchable()
-    ->required(),
-
+                // Staff dropdown using options (custom full name)
+                Select::make('staff_id')
+                    ->label('Staff')
+                    ->options(function () {
+                        return Staff::all()->mapWithKeys(fn($staff) => [
+                            $staff->id => $staff->first_name . ' ' . $staff->last_name
+                        ])->toArray();
+                    })
+                    ->searchable()
+                    ->required(),
 
                 // Role dropdown using relationship
                 Select::make('role_id')
@@ -46,12 +45,15 @@ class StaffAssignmentForm
                     ->relationship('subject', 'name')
                     ->nullable(),
 
-                // Academic Year dropdown
-               Select::make('academic_year_id')
-    ->label('Academic Year')
-    ->options(AcademicYear::all()->pluck('id', 'id'))
-    ->required(),
-
+                // Academic Year dropdown using accessor
+                Select::make('academic_year_id')
+                    ->label('Academic Year')
+                    ->options(function () {
+                        return AcademicYear::all()
+                            ->pluck('display_name', 'id')
+                            ->toArray(); // ensure array
+                    })
+                    ->required(),
             ]);
     }
 }

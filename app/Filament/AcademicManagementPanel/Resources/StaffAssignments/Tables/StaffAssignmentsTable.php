@@ -19,21 +19,28 @@ class StaffAssignmentsTable
                     ->label('Staff')
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('role.name')
                     ->label('Role')
                     ->sortable()
                     ->searchable(),
+
                 TextColumn::make('grade.name')
                     ->label('Grade')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->getStateUsing(fn($record) => $record->grade?->name),
+
                 TextColumn::make('subject.name')
                     ->label('Subject')
                     ->sortable()
-                    ->searchable(),
-                TextColumn::make('academicYearLabel')
+                    ->searchable()
+                    ->getStateUsing(fn($record) => $record->subject?->name),
+
+                TextColumn::make('academicYear.display_name')
                     ->label('Academic Year')
-                    ->sortable(),
+                    ->sortable()
+                    ->getStateUsing(fn($record) => $record->academicYear?->display_name),
             ])
             ->filters([
                 //
