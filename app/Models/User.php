@@ -50,10 +50,12 @@ class User extends Authenticatable implements FilamentUserContract
     }
 
     // Filament access control
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return $this->person_type === 'staff';
-    }
+   public function canAccessPanel(Panel $panel): bool
+{
+    // return $this->person_type === 'staff';
+    return true;  // allow access temporarily
+}
+
 
     // Polymorphic relation to staff or student
     public function person()

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Staff extends Model
 {
@@ -25,13 +26,11 @@ class Staff extends Model
         'hire_date' => 'date',
     ];
 
-
-// App\Models\Staff.php
-
-public function getFullNameAttribute()
-{
-    return $this->first_name . ' ' . $this->last_name;
-}
+    // Accessors
+    public function getFullNameAttribute()
+    {
+        return $this->first_name . ' ' . $this->last_name;
+    }
 
     // Relationships
     public function school(): BelongsTo
@@ -59,5 +58,21 @@ public function getFullNameAttribute()
         return $this->hasMany(DisciplinaryRecord::class, 'staff_id');
     }
 
+    public function classSubjects(): HasMany
+    {
+        return $this->hasMany(ClassSubject::class, 'teacher_id');
+    }
+
+    public function timetableEntries(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            TimetableEntry::class,
+            ClassSubject::class,
+            'teacher_id',        // Foreign key on class_subjects table
+            'class_subject_id',  // Foreign key on timetable_entries table
+            'id',                // Local key on staff table
+            'id'                 // Local key on class_subjects table
+        );
+    }
 }
 

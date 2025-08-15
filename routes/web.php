@@ -1,24 +1,20 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-
-use App\Http\Controllers\TeacherTimetableController;
 Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-
-
-
-Route::prefix('teacher-timetable')->group(function () {
-    Route::get('/', [TeacherTimetableController::class, 'index'])->name('teacher.timetable.index');
-    Route::get('/create', [TeacherTimetableController::class, 'create'])->name('teacher.timetable.create');
-    Route::post('/', [TeacherTimetableController::class, 'store'])->name('teacher.timetable.store');
-    Route::get('/{teacher}', [TeacherTimetableController::class, 'show'])->name('teacher.timetable.show');
-    Route::get('/edit/{timetableEntry}', [TeacherTimetableController::class, 'edit'])->name('teacher.timetable.edit');
-    Route::put('/{timetableEntry}', [TeacherTimetableController::class, 'update'])->name('teacher.timetable.update');
-    Route::delete('/{timetableEntry}', [TeacherTimetableController::class, 'destroy'])->name('teacher.timetable.destroy');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+require __DIR__.'/auth.php';

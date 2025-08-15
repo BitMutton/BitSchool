@@ -3,41 +3,33 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('timetable_entries', function (Blueprint $table) {
-            $table->bigIncrements('id');
-
-            $table->unsignedBigInteger('class_subject_id');
-            $table->foreign('class_subject_id')
-                ->references('id')
-                ->on('class_subjects')
-                ->onDelete('cascade');
-
-            $table->string('day_of_week', 10);
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->id();
+            $table->foreignId('class_subject_id')->constrained()->onDelete('cascade');
+            $table->enum('day_of_week', ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']);
+            $table->foreignId('bell_schedule_id')->nullable()->constrained('bell_schedules')->onDelete('set null');
+            $table->integer('period')->nullable();
+            $table->foreignId('room_id')->nullable()->constrained('rooms'); // optional: add 'rooms' table if exists
+            $table->timestamps();
         });
-
-        // Add CHECK constraint for day_of_week
-        DB::statement("
-            ALTER TABLE timetable_entries 
-            ADD CONSTRAINT chk_timetable_day 
-            CHECK (day_of_week IN ('Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'))
-        ");
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('timetable_entries');
     }
