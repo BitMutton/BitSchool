@@ -18,6 +18,12 @@ class AcademicYearInfolist
                 TextEntry::make('end_date')
                     ->date(),
                 TextEntry::make('status'),
+                TextEntry::make('created_by')
+                    ->numeric(),
+                TextEntry::make('updated_by')
+                    ->numeric(),
+                TextEntry::make('deleted_at')
+                    ->dateTime(),
                 TextEntry::make('created_at')
                     ->dateTime(),
                 TextEntry::make('updated_at')

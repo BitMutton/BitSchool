@@ -20,8 +20,14 @@ class AcademicYearForm
                     ->required(),
                 DatePicker::make('end_date')
                     ->required(),
-                TextInput::make('status')
+                Select::make('status')
+                    ->options(['active' => 'Active', 'archived' => 'Archived', 'upcoming' => 'Upcoming'])
+                    ->default('upcoming')
                     ->required(),
+                TextInput::make('created_by')
+                    ->numeric(),
+                TextInput::make('updated_by')
+                    ->numeric(),
             ]);
     }
 }
