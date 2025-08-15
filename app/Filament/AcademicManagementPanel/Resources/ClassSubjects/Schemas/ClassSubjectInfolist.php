@@ -17,6 +17,14 @@ class ClassSubjectInfolist
                     ->numeric(),
                 TextEntry::make('teacher.id')
                     ->numeric(),
+                TextEntry::make('remarks'),
+               
+                TextEntry::make('created_at')
+                    ->dateTime(),
+                TextEntry::make('updated_at')
+                    ->dateTime(),
+                TextEntry::make('deleted_at')
+                    ->dateTime(),
             ]);
     }
 }

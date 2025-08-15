@@ -3,6 +3,7 @@
 namespace App\Filament\AcademicManagementPanel\Resources\ClassSubjects\Schemas;
 
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
 class ClassSubjectForm
@@ -20,6 +21,8 @@ class ClassSubjectForm
                 Select::make('teacher_id')
                     ->relationship('teacher', 'id')
                     ->required(),
+                TextInput::make('remarks'),
+               
             ]);
     }
 }
