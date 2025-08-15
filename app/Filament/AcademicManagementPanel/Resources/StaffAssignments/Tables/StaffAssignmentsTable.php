@@ -15,20 +15,24 @@ class StaffAssignmentsTable
     {
         return $table
             ->columns([
-                TextColumn::make('staff_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('role_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('grade_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('subject_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('academic_year_id')
-                    ->numeric()
+                TextColumn::make('staff.full_name')
+                    ->label('Staff')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('role.name')
+                    ->label('Role')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('grade.name')
+                    ->label('Grade')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('subject.name')
+                    ->label('Subject')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('academicYearLabel')
+                    ->label('Academic Year')
                     ->sortable(),
             ])
             ->filters([
@@ -45,3 +49,4 @@ class StaffAssignmentsTable
             ]);
     }
 }
+
