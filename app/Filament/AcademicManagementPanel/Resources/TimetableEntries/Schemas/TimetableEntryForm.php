@@ -15,17 +15,17 @@ class TimetableEntryForm
         return $schema
             ->components([
                 // Class & Subject
-                Select::make('class_subject_id')
-                    ->label('Class - Subject')
-                    ->options(
-                        ClassSubject::with(['schoolClass', 'subject'])
-                            ->get()
-                            ->mapWithKeys(fn($cs) => [
-                                $cs->id => ($cs->schoolClass?->name ?? 'Unknown Class') .
-                                    ' - ' . ($cs->subject?->name ?? 'Unknown Subject')
-                            ])
-                    )
-                    ->required(),
+               Select::make('class_subject_id')
+    ->label('Class - Subject')
+    ->options(
+        \App\Models\ClassSubject::with(['schoolClass', 'subject'])
+            ->get()
+            ->mapWithKeys(fn($cs) => [
+                $cs->id => ($cs->schoolClass?->name ?? 'Unknown Class') . ' - ' . ($cs->subject?->name ?? 'Unknown Subject')
+            ])
+    )
+    ->required(),
+
 
                 // Staff
                 Select::make('staff_id')

@@ -17,10 +17,10 @@ class TimetableEntriesTable
         return $table
             ->columns([
                 // ✅ Class + Subject name with custom sort
-               TextColumn::make('classSubject')
+              TextColumn::make('classSubject')
     ->label('Class - Subject')
     ->formatStateUsing(fn($record) =>
-        ($record->classSubject?->class?->name ?? 'Unknown Class')
+        ($record->classSubject?->schoolClass?->name ?? 'Unknown Class')
         . ' - ' .
         ($record->classSubject?->subject?->name ?? 'Unknown Subject')
     )
@@ -28,10 +28,10 @@ class TimetableEntriesTable
         query: function (\Illuminate\Database\Eloquent\Builder $query, string $direction) {
             return $query
                 ->join('class_subjects', 'timetable_entries.class_subject_id', '=', 'class_subjects.id')
-                ->join('classes', 'class_subjects.class_id', '=', 'classes.id')
+                ->join('classes', 'class_subjects.class_id', '=', 'classes.id')   // ✅ FIXED
                 ->join('subjects', 'class_subjects.subject_id', '=', 'subjects.id')
                 ->orderByRaw("CONCAT(classes.name, ' - ', subjects.name) $direction")
-                ->select('timetable_entries.*'); // 👈 keep base select clean
+                ->select('timetable_entries.*');
         }
     ),
 

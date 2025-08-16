@@ -12,13 +12,13 @@ class TimetableEntryInfolist
         return $schema
             ->components([
                 // Class + Subject
-                TextEntry::make('classSubject')
-                    ->label('Class - Subject')
-                    ->formatStateUsing(fn($record) =>
-                        ($record->classSubject?->schoolClass?->name ?? 'Unknown Class')
-                        . ' - ' .
-                        ($record->classSubject?->subject?->name ?? 'Unknown Subject')
-                    ),
+               TextEntry::make('classSubject')
+    ->label('Class - Subject')
+    ->formatStateUsing(fn($record) =>
+        ($record->classSubject?->schoolClass?->name ?? 'Unknown Class')
+        . ' - ' .
+        ($record->classSubject?->subject?->name ?? 'Unknown Subject')
+    ),
 
                 // Staff
                 TextEntry::make('staff')
