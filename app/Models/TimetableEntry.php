@@ -24,11 +24,13 @@ class TimetableEntry extends Model
 
     protected $casts = [
         'day_of_week' => 'string',
-        'start_time' => 'datetime:H:i',
-        'end_time' => 'datetime:H:i',
+        'start_time' => 'datetime',
+        'end_time' => 'datetime',
     ];
 
+    // ----------------------------
     // Relationships
+    // ----------------------------
     public function classSubject(): BelongsTo
     {
         return $this->belongsTo(ClassSubject::class, 'class_subject_id');
@@ -36,7 +38,7 @@ class TimetableEntry extends Model
 
     public function staff(): BelongsTo
     {
-        return $this->belongsTo(Staff::class, 'staff_id'); // teacher for this slot
+        return $this->belongsTo(Staff::class, 'staff_id');
     }
 
     public function room(): BelongsTo
@@ -49,31 +51,74 @@ class TimetableEntry extends Model
         return $this->belongsTo(BellSchedule::class, 'bell_schedule_id');
     }
 
-    // Optional accessors
-    public function getStartTimeAttribute($value)
-    {
-        return Carbon::parse($value);
-    }
-
-    public function getEndTimeAttribute($value)
-    {
-        return Carbon::parse($value);
-    }
-
-    // Display helper for Filament forms / tables
+    // ----------------------------
+    // Display helpers
+    // ----------------------------
     public function getClassSubjectDisplayAttribute(): string
     {
         $cs = $this->classSubject;
+
         return $cs
             ? ($cs->schoolClass?->name ?? 'Unknown Class')
               . ' - '
               . ($cs->subject?->name ?? 'Unknown Subject')
               . ' ('
-              . ($this->staff?->full_name ?? 'Unknown Teacher') // Use staff assigned here
+              . ($this->staff?->full_name ?? 'Unknown Teacher')
               . ')'
             : '';
     }
 
+    // ----------------------------
+    // Availability checks
+    // ----------------------------
+    public static function isTeacherAvailable(
+        int $teacherId,
+        string $day,
+        string|Carbon $startTime,
+        string|Carbon $endTime,
+        int $excludeId = null
+    ): bool {
+        $query = self::where('staff_id', $teacherId)
+            ->where('day_of_week', $day)
+            ->where(function($q) use ($startTime, $endTime) {
+                $q->whereBetween('start_time', [$startTime, $endTime])
+                  ->orWhereBetween('end_time', [$startTime, $endTime])
+                  ->orWhere(function($q2) use ($startTime, $endTime) {
+                      $q2->where('start_time', '<=', $startTime)
+                         ->where('end_time', '>=', $endTime);
+                  });
+            });
 
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        return !$query->exists();
+    }
+
+    public static function isRoomAvailable(
+        int $roomId,
+        string $day,
+        string|Carbon $startTime,
+        string|Carbon $endTime,
+        int $excludeId = null
+    ): bool {
+        $query = self::where('room_id', $roomId)
+            ->where('day_of_week', $day)
+            ->where(function($q) use ($startTime, $endTime) {
+                $q->whereBetween('start_time', [$startTime, $endTime])
+                  ->orWhereBetween('end_time', [$startTime, $endTime])
+                  ->orWhere(function($q2) use ($startTime, $endTime) {
+                      $q2->where('start_time', '<=', $startTime)
+                         ->where('end_time', '>=', $endTime);
+                  });
+            });
+
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        return !$query->exists();
+    }
 }
 

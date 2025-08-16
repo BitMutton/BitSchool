@@ -15,47 +15,30 @@ class TimetableEntriesTable
     {
         return $table
             ->columns([
-                TextColumn::make('classSubjectDisplay')
-                    ->label('Class & Subject')
-                    ->sortable()
-                    ->searchable(),
-
-               TextColumn::make('staff.full_name')
-    ->label('Teacher')
-    ->sortable()
-    ->searchable(),
-
-
-                TextColumn::make('day_of_week')
-                    ->label('Day')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('bellSchedule.name')
-                    ->label('Bell Schedule')
-                    ->sortable()
-                    ->searchable(),
-
-                TextColumn::make('period')
-                    ->label('Period')
+                TextColumn::make('classSubject.id')
+                    ->numeric()
                     ->sortable(),
-
-                TextColumn::make('room.name')
-                    ->label('Room')
-                    ->sortable()
-                    ->searchable(),
-
+                TextColumn::make('day_of_week'),
+                TextColumn::make('bellSchedule.name')
+                    ->numeric()
+                    ->sortable(),
                 TextColumn::make('created_at')
-                    ->label('Created')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-
                 TextColumn::make('updated_at')
-                    ->label('Updated')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('period')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('room.name')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('staff.id')
+                    ->numeric()
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -71,4 +54,3 @@ class TimetableEntriesTable
             ]);
     }
 }
-

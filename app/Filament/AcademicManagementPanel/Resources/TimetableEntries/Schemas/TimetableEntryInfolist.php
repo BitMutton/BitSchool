@@ -11,32 +11,21 @@ class TimetableEntryInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('classSubjectDisplay')
-                    ->label('Class & Subject'),
-
-                TextEntry::make('staff.full_name')
-                    ->label('Teacher'),
-
-                TextEntry::make('day_of_week')
-                    ->label('Day'),
-
+                TextEntry::make('classSubject.id')
+                    ->numeric(),
+                TextEntry::make('day_of_week'),
                 TextEntry::make('bellSchedule.name')
-                    ->label('Bell Schedule'),
-
-                TextEntry::make('period')
-                    ->label('Period'),
-
-                TextEntry::make('room.name')
-                    ->label('Room'),
-
+                    ->numeric(),
                 TextEntry::make('created_at')
-                    ->label('Created')
                     ->dateTime(),
-
                 TextEntry::make('updated_at')
-                    ->label('Updated')
                     ->dateTime(),
+                TextEntry::make('period')
+                    ->numeric(),
+                TextEntry::make('room.name')
+                    ->numeric(),
+                TextEntry::make('staff.id')
+                    ->numeric(),
             ]);
     }
 }
-
