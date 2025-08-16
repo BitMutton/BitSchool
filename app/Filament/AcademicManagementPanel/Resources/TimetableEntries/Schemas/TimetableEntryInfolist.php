@@ -11,37 +11,40 @@ class TimetableEntryInfolist
     {
         return $schema
             ->components([
-                // Show Class - Subject instead of ID
-                TextEntry::make('classSubjectDisplay')
+                // Class + Subject
+                TextEntry::make('classSubject')
                     ->label('Class - Subject')
-                    ->getStateUsing(fn ($record) => 
-                        ($record->classSubject->schoolClass->name ?? 'Unknown Class') 
-                        . ' - ' 
-                        . ($record->classSubject->subject->name ?? 'Unknown Subject')
+                    ->formatStateUsing(fn($record) =>
+                        ($record->classSubject?->schoolClass?->name ?? 'Unknown Class')
+                        . ' - ' .
+                        ($record->classSubject?->subject?->name ?? 'Unknown Subject')
                     ),
 
-                TextEntry::make('day_of_week'),
+                // Staff
+                TextEntry::make('staff')
+                    ->label('Staff')
+                    ->formatStateUsing(fn($record) =>
+                        trim(($record->staff?->first_name ?? '') . ' ' . ($record->staff?->last_name ?? ''))
+                    ),
+
+                TextEntry::make('day_of_week')->label('Day'),
 
                 TextEntry::make('bellSchedule.name')
                     ->label('Bell Schedule'),
 
-                TextEntry::make('created_at')
-                    ->dateTime(),
-
-                TextEntry::make('updated_at')
-                    ->dateTime(),
-
-                TextEntry::make('period'),
+                TextEntry::make('period')
+                    ->label('Period'),
 
                 TextEntry::make('room.name')
                     ->label('Room'),
 
-                // Show staff full name instead of ID
-                TextEntry::make('staffDisplay')
-                    ->label('Staff')
-                    ->getStateUsing(fn ($record) => 
-                        ($record->staff->first_name ?? '') . ' ' . ($record->staff->last_name ?? '')
-                    ),
+                TextEntry::make('created_at')
+                    ->dateTime()
+                    ->label('Created'),
+
+                TextEntry::make('updated_at')
+                    ->dateTime()
+                    ->label('Updated'),
             ]);
     }
 }

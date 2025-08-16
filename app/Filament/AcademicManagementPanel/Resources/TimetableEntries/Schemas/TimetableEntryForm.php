@@ -5,6 +5,8 @@ namespace App\Filament\AcademicManagementPanel\Resources\TimetableEntries\Schema
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use App\Models\ClassSubject;
+use App\Models\Staff;
 
 class TimetableEntryForm
 {
@@ -12,30 +14,32 @@ class TimetableEntryForm
     {
         return $schema
             ->components([
+                // Class & Subject
                 Select::make('class_subject_id')
                     ->label('Class - Subject')
-                    ->relationship(
-                        name: 'classSubject',
-                        titleAttribute: 'id' // required, overridden below
-                    )
-                    ->getOptionLabelFromRecordUsing(fn($record) =>
-                        ($record->schoolClass?->name ?? 'Unknown Class') . ' - ' . ($record->subject?->name ?? 'Unknown Subject')
+                    ->options(
+                        ClassSubject::with(['schoolClass', 'subject'])
+                            ->get()
+                            ->mapWithKeys(fn($cs) => [
+                                $cs->id => ($cs->schoolClass?->name ?? 'Unknown Class') .
+                                    ' - ' . ($cs->subject?->name ?? 'Unknown Subject')
+                            ])
                     )
                     ->required(),
 
+                // Staff
                 Select::make('staff_id')
                     ->label('Staff')
-                    ->relationship(
-                        name: 'staff',
-                        titleAttribute: 'id'
-                    )
-                    ->getOptionLabelFromRecordUsing(fn($record) =>
-                        trim(($record->first_name ?? '') . ' ' . ($record->last_name ?? ''))
+                    ->options(
+                        Staff::all()
+                            ->mapWithKeys(fn($s) => [
+                                $s->id => trim(($s->first_name ?? '') . ' ' . ($s->last_name ?? ''))
+                            ])
                     )
                     ->required(),
 
+                // Day of Week
                 Select::make('day_of_week')
-                    ->label('Day of Week')
                     ->options([
                         'Monday' => 'Monday',
                         'Tuesday' => 'Tuesday',
@@ -48,14 +52,16 @@ class TimetableEntryForm
                     ->default('Monday')
                     ->required(),
 
+                // Bell Schedule
                 Select::make('bell_schedule_id')
                     ->label('Bell Schedule')
                     ->relationship('bellSchedule', 'name'),
 
+                // Period
                 TextInput::make('period')
-                    ->label('Period')
                     ->numeric(),
 
+                // Room
                 Select::make('room_id')
                     ->label('Room')
                     ->relationship('room', 'name'),
