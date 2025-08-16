@@ -11,21 +11,29 @@ class ClassSubjectInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('class_id')
-                    ->numeric(),
+                TextEntry::make('schoolClass.name')
+                    ->label('Class'),
+
                 TextEntry::make('subject.name')
-                    ->numeric(),
-                TextEntry::make('remarks'),
-                TextEntry::make('created_by')
-                    ->numeric(),
-                TextEntry::make('updated_by')
-                    ->numeric(),
+                    ->label('Subject'),
+
+                TextEntry::make('remarks')
+                    ->label('Remarks'),
+
+                TextEntry::make('creator.name')
+                    ->label('Created By'),
+
+                TextEntry::make('updater.name')
+                    ->label('Updated By'),
+
                 TextEntry::make('created_at')
+                    ->label('Created At')
                     ->dateTime(),
+
                 TextEntry::make('updated_at')
-                    ->dateTime(),
-                TextEntry::make('deleted_at')
+                    ->label('Updated At')
                     ->dateTime(),
             ]);
     }
 }
+

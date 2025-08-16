@@ -5,6 +5,8 @@ namespace App\Filament\AcademicManagementPanel\Resources\ClassSubjects\Schemas;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use App\Models\SchoolClass;
+use App\Models\Subject;
 
 class ClassSubjectForm
 {
@@ -12,17 +14,23 @@ class ClassSubjectForm
     {
         return $schema
             ->components([
-                TextInput::make('class_id')
-                    ->required()
-                    ->numeric(),
-                Select::make('subject_id')
-                    ->relationship('subject', 'name')
+                Select::make('class_id')
+                    ->label('Class')
+                    ->relationship('schoolClass', 'name')
+                    ->searchable()
                     ->required(),
-                TextInput::make('remarks'),
-                TextInput::make('created_by')
-                    ->numeric(),
-                TextInput::make('updated_by')
-                    ->numeric(),
+
+                Select::make('subject_id')
+                    ->label('Subject')
+                    ->relationship('subject', 'name')
+                    ->searchable()
+                    ->required(),
+
+                TextInput::make('remarks')
+                    ->label('Remarks')
+                    ->maxLength(255)
+                    ->placeholder('Optional notes...'),
             ]);
     }
 }
+
